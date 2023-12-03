@@ -127,7 +127,8 @@ def process_score(request:dict)->dict:
 
     #6. capture adjusted scores   
 
-    judgement_tracker_collection = getjudgementtracker.get_judgment_tracker()['judgement_tracker']
+    judgement_tracker_collection = getjudgementtracker.get_judgment_tracker()
+    print("judgement_tracker_collection = ", judgement_tracker_collection)
     idea_ids_in_judgement_tracker =  judgement_tracker_collection.keys()
     if(idea_id not in idea_ids_in_judgement_tracker):
         judgement_tracker_collection[idea_id] = {}
@@ -155,7 +156,7 @@ def process_score(request:dict)->dict:
         judgement_tracker_collection[idea_id]['total'] = updated_total
 
     print ("judgement_tracker_collection = ", judgement_tracker_collection)    
-    updatejudgmenttracker.update_judgment_tracker(judgement_tracker_collection)
+    updatejudgementtracker.update_judgment_tracker(judgement_tracker_collection)
            
     return {"status": "OK"}
 

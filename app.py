@@ -49,3 +49,5 @@ def process_login():
 def get_ideacategory():
     return getideacategory.fetch_idea_category_list()
 
+if __name__ == '__main__':
+    app.run()
