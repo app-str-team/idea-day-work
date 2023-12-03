@@ -3,11 +3,9 @@ from .. import firestoreconnection
 import json
 
 def fetch_idea_list():
-    
 
-    collection = firestoreconnection.db.collection('idea_list')
+    collection = firestoreconnection.db.collection('ideaday_container')
 
-    res = collection.document('nTxLkaWbnk3H878ZrqCr').get().to_dict()
+    res = collection.document('idea_list').get().to_dict()["idea_list"]
 
-    ideas_list = json.dumps(res)
-    return ideas_list
+    return res
