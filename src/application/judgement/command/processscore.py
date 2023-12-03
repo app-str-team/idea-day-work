@@ -1,6 +1,8 @@
+from turtle import update
 from ....persistence.judgement import getjudgementtracker
 from ....persistence.ideas import getideaslist
 from ....persistence.ideacategories import getideacategories
+from ....persistence.judgement import updatejudgementtracker
 
 import json
 
@@ -97,7 +99,11 @@ def process_score(request:dict)->dict:
     idea_category = None
 
     for each_idea in idea_list:
-        if(each_idea['id'] == int(idea_id)):
+        if( 'id' in each_idea.keys() and each_idea['id'] == int(idea_id)):
+            required_idea = each_idea
+        elif('Id' in each_idea.keys() and each_idea['Id'] == int(idea_id)):
+            required_idea = each_idea
+        elif('ID' in each_idea.keys() and each_idea['ID'] == int(idea_id)):
             required_idea = each_idea
             
     if required_idea is None:
@@ -118,19 +124,39 @@ def process_score(request:dict)->dict:
     
     # 5. adjust the scores are per the judgement criteria
     criteria_based_adjusted_scores = adjust_scores(transformed_scores_to_int, judgement_criteria)
-    print ("criteria_based_adjusted_scores = ", criteria_based_adjusted_scores)
 
     #6. capture adjusted scores   
 
-    judgement_tracker_collection = getjudgementtracker.get_judgment_tracker()
-    print("judgement_tracker_collection = ", judgement_tracker_collection['judgement_tracker'])
-    #print("jsonObj = ", request)
+    judgement_tracker_collection = getjudgementtracker.get_judgment_tracker()['judgement_tracker']
     idea_ids_in_judgement_tracker =  judgement_tracker_collection.keys()
     if(idea_id not in idea_ids_in_judgement_tracker):
-        pass
-    else:
-        pass
+        judgement_tracker_collection[idea_id] = {}
+        total = {k:v for (k,v) in zip(criteria_based_adjusted_scores.keys(), criteria_based_adjusted_scores.values())}
+        judgement_tracker_collection[idea_id]['total'] = total
         
+        x = {k:v for (k,v) in zip(criteria_based_adjusted_scores.keys(), criteria_based_adjusted_scores.values())}
+        judgement_tracker_collection[idea_id][request['judge_uid']] = x
+        if('comment' in request.keys()):
+            judgement_tracker_collection[idea_id][request['judge_uid']]['comment'] = request['comment']
+        print(judgement_tracker_collection)
+    else:
+        current_idea_scores = judgement_tracker_collection[idea_id]
+        x = {k:v for (k,v) in zip(criteria_based_adjusted_scores.keys(), criteria_based_adjusted_scores.values())}
+        judgement_tracker_collection[idea_id][request['judge_uid']] = x
+        if('comment' in request.keys()):
+            judgement_tracker_collection[idea_id][request['judge_uid']]['comment'] = request['comment']
+        print(judgement_tracker_collection)
+        total = judgement_tracker_collection[idea_id]['total']
+        updated_total = {}
+        for k in total.keys():
+            if k in x.keys():
+                updated_total[k] = total[k] + x[k]
+        print("updated_total = ", updated_total)      
+        judgement_tracker_collection[idea_id]['total'] = updated_total
+
+    print ("judgement_tracker_collection = ", judgement_tracker_collection)    
+    updatejudgmenttracker.update_judgment_tracker(judgement_tracker_collection)
+           
     return {"status": "OK"}
 
 

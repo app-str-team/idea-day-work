@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from src.application.ideas.queries import getidealist
+from src.application.ideas.queries import getidealist, getideacategory
 from src.application.judgement.command import processscore
 from src.application.users.command import createuser, signin
 
@@ -45,6 +45,9 @@ def process_login():
     else:
         return {'error':'Content-Type not supported!'}   
 
+@app.route("/ideacategory",methods=['GET'])
+def get_ideacategory():
+    return getideacategory.fetch_idea_category_list()
 
 if __name__ == "__main__":
     app.run()
