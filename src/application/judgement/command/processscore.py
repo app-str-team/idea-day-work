@@ -99,11 +99,11 @@ def process_score(request:dict)->dict:
     idea_category = None
 
     for each_idea in idea_list:
-        if( 'id' in each_idea.keys() and each_idea['id'] == int(idea_id)):
+        if( 'id' in each_idea.keys() and each_idea['id'] == idea_id):
             required_idea = each_idea
-        elif('Id' in each_idea.keys() and each_idea['Id'] == int(idea_id)):
+        elif('Id' in each_idea.keys() and each_idea['Id'] == idea_id):
             required_idea = each_idea
-        elif('ID' in each_idea.keys() and each_idea['ID'] == int(idea_id)):
+        elif('ID' in each_idea.keys() and each_idea['ID'] == idea_id):
             required_idea = each_idea
             
     if required_idea is None:
