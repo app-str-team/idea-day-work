@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 gpg --quiet --batch --yes --decrypt --passphrase='$LARGE_SECRET_PASSPHRASE' \
